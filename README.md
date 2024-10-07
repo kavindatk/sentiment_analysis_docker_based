@@ -1,6 +1,6 @@
 # Complete Sentiment Analysis Project (Docker Container based Python)
 <picture>
-  <img alt="alpine linux" src="https://github.com/kavindatk/sentiment_analysis_docker_based/blob/main/images/alpine.png" width="300" height="150">
+  <img alt="alpine linux" src="https://github.com/kavindatk/sentiment_analysis_docker_based/blob/main/images/alpine.png" width="300" height="200">
 </picture>
 
 
