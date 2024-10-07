@@ -1,7 +1,7 @@
 # Complete Sentiment Analysis Project (Docker Container based Python)
 <p align="center">
 <picture>
-  <img alt="sentiment" src="https://github.com/kavindatk/sentiment_analysis_docker_based/blob/main/images/sentiment.png" width="400" height="200">
+  <img alt="sentiment" src="https://github.com/kavindatk/sentiment_analysis_docker_based/blob/main/images/sentiment.png" width="400" height="250">
 </picture>
 </p>
 <br />
@@ -141,7 +141,7 @@ In the next step, I will create a container with local port 2222 mapped to the c
   <img alt="docker" src="https://github.com/kavindatk/sentiment_analysis_docker_based/blob/main/images/docker_container.JPG" width="900" height="300">
 </picture>
 
-<br/>
+<br/><br/>
 
 <picture>
   <img alt="docker" src="https://github.com/kavindatk/sentiment_analysis_docker_based/blob/main/images/containner_status.JPG" width="900" height="500">
@@ -151,19 +151,24 @@ In the next step, I will create a container with local port 2222 mapped to the c
 
 ### Testing Docker Containner 
 
+In this step, I will test remote access using PuTTY, rename the terminal (otherwise, it shows the Docker-generated ID), check the working directory status, and also remember that we can add all required installations and configurations to the Dockerfile. However, for this project, I will install some of the libraries using SSH access.
+
+##### Rename Terminal
+
+```cmd
+export PS1="\u# "
+```
+
+
+
 <br/><br/>
 
 <picture>
-  <img alt="docker" src="https://github.com/kavindatk/sentiment_analysis_docker_based/blob/main/images/docker_cont_test.JPG" width="900" height="300">
-</picture>
-
-<br/>
-
-<picture>
-  <img alt="docker" src="https://github.com/kavindatk/sentiment_analysis_docker_based/blob/main/images/remote_test.JPG" width="900" height="500">
+  <img alt="docker" src="https://github.com/kavindatk/sentiment_analysis_docker_based/blob/main/images/wokr_dir.JPG" width="700" height="400">
 </picture>
 
 <br/><br/>
+
 
 ## Download Dataset
 
