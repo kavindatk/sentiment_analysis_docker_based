@@ -2,3 +2,5 @@ python -m venv myenv
 
 chmod +x myenv/bin/activate
 source myenv/bin/activate
+
+test git
