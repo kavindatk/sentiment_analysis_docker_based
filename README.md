@@ -56,7 +56,60 @@ In this example, I will use a Windows laptop, so I am using the Docker setup for
 
 ### Write DockerFile
 
+In this step, I will elaborate on the Dockerfile I used for the Sentinel analysis project. To create a custom Linux-based Docker image, I chose Alpine Linux because it's a minimal, lightweight Linux distribution. However, depending on your preference, you can go for Ubuntu, CentOS, or any other Linux distro.Based on the distro some code and library names will be changed
+
+```cmd
+FROM alpine:latest
+```
+
+In the second step, I will install the required applications, plugins, and updates including ssh,python3, java...etc. 
+
+```cmd
+# Install necessary packages
+RUN apk update && \
+    apk add openjdk11 && \
+    apk add busybox-extras && \
+    apk add bash && \
+    apk add wget && \
+    apk add --no-cache python3 py3-pip && \
+    apk add gcc python3-dev musl-dev linux-headers && \
+    apk add nano && \
+	apk add openssh && \
+	apk add sudo && \
+	apk add openrc
+```
+
+The third step involves setting up the home directory and configuring SSH. Finally, I will expose port 22 for remote login and then start the SSH service.
+
+```cmd
+# Set up Home Dir
+RUN mkdir /home/Script
+WORKDIR /home/Script
+RUN ssh-keygen -A
+RUN (echo 'root'; echo 'root') | passwd root
+RUN echo 'UseDNS no' >> /etc/ssh/sshd_config
+RUN echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config
+
+# Expose necessary ports
+EXPOSE 22
+
+# Set the correct command for starting Jupyter Notebook
+CMD ["/usr/sbin/sshd", "-D"]
+
+```
+
+For this project, I have decided not to use Jupyter Notebook and decided to use Python scripts.
+
+Full Docker File : [DockeFile](https://github.com/kavindatk/sentiment_analysis_docker_based/blob/main/Docker/Dockerfile)
+
+
 ### Create Docker Image
+
+Next, I will create a Docker image using the Dockerfile by executing the command below.
+
+```cmd
+docker build -t <docker_image_name> . 
+```
 
 ### Create Docker Containner
 
