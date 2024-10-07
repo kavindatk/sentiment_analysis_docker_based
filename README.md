@@ -111,10 +111,59 @@ Next, I will create a Docker image using the Dockerfile by executing the command
 docker build -t <docker_image_name> . 
 ```
 
+<br/>
+
+<picture>
+  <img alt="docker" src="https://github.com/kavindatk/sentiment_analysis_docker_based/blob/main/images/docker_cmd.JPG" width="700" height="400">
+</picture>
+
+<br/><br/>
+
+<picture>
+  <img alt="docker" src="https://github.com/kavindatk/sentiment_analysis_docker_based/blob/main/images/docker_window.JPG" width="700" height="400">
+</picture>
+
+<br/><br/>
+
 ### Create Docker Containner
+
+In the next step, I will create a container with local port 2222 mapped to the container's port 22, and set my local laptop's working directory to the container directory to easily manage the script files.
+
+<br/>
+
+```cmd
+ docker run -d -p 2222:22 -v "D:\Git Codes\sentiment_analysis_docker_based\Sentiment_Analysis":/home/Script --name py_alpine alpine_python
+```
+
+<br/><br/>
+
+<picture>
+  <img alt="docker" src="https://github.com/kavindatk/sentiment_analysis_docker_based/blob/main/images/docker_container.JPG" width="900" height="300">
+</picture>
+
+<br/>
+
+<picture>
+  <img alt="docker" src="https://github.com/kavindatk/sentiment_analysis_docker_based/blob/main/images/containner_status.JPG" width="900" height="500">
+</picture>
+
+<br/><br/>
 
 ### Testing Docker Containner 
 
+<br/><br/>
+
+<picture>
+  <img alt="docker" src="https://github.com/kavindatk/sentiment_analysis_docker_based/blob/main/images/docker_cont_test.JPG" width="900" height="300">
+</picture>
+
+<br/>
+
+<picture>
+  <img alt="docker" src="https://github.com/kavindatk/sentiment_analysis_docker_based/blob/main/images/remote_test.JPG" width="900" height="500">
+</picture>
+
+<br/><br/>
 
 ## Download Dataset
 
