@@ -180,6 +180,100 @@ Dataset : [Twitter Sentiment Analysis](https://www.kaggle.com/datasets/jp797498e
 
 <br/>
 
+## Data Preprocessing and Initial plugins installation 
+
+Initially, I will create a separate development environment in Python for my project. Then, I will install the required libraries within this environment. This setup will isolate my development from others, ensuring a more organized and independent workflow.
+
+```cmd
+#Create python environment
+
+python -m venv myenv
+
+#enable execute permission and activate the environment
+
+chmod +x myenv/bin/activate
+source myenv/bin/activate
+
+#Install required libraries 
+
+pip install pandas
+pip install numpy
+pip install matplotlib
+
+```
+Next, I will create a Python file called ``` text_preprocessing.py ``` and include the text preprocessing code in the following manner.
+
+```python
+#import required libraries
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+```
+
+```python
+def read_data_files():
+    
+    #read csv file and remove unwanted columns 
+    columns = ['tweet_id','entity','sentiment','tweet_content']
+    df = pd.read_csv("../Tweets/twitter_training.csv",names=columns)
+    
+    df.drop(columns=['tweet_id', 'entity'], inplace=True)
+    
+    return df
+```
+
+<br/><br/>
+This will show the basic idea of the data
+
+```python
+def show_file_details(df):
+    
+    print('***************Sample Tweets contents***************')
+    print(df.head())
+    
+    
+    print('***************[initial] Dataframe Shape***************')
+    print(df.shape)
+
+    print('***************[initial] Dataframe Duplicate Check***************')
+    print(df.duplicated().sum())
+    
+    print('***************[initial] Dataframe Null Check***************')
+    print(df.isnull().sum())    
+
+    print('***************[initial] Dataframe summary check***************')
+    print(df.describe()) 
+```
+
+<br/><br/>
+
+Next step i will filter required content and drop duuplicate and null data from data frame
+
+```python
+def data_preprocess_stage_01(df_all):
+    
+    filter_data = ['Positive','Negative']
+    
+    df = df_all[df_all['sentiment'].isin(filter_data)]
+    
+    print('***************[Post] Dataframe Duplicate remove check***************')
+    df = df.drop_duplicates()
+    print(df.duplicated().sum())
+    
+    print('***************[Post] Dataframe drop null check***************')
+    df = df.dropna()
+    print(df.isnull().sum()) 
+    
+    print('***************[Post] Dataframe summary check***************')
+    print(df.describe())
+    
+    return df
+```
+
+<br/><br/>
+
 ## Data Cleaning & Stemming
 
 
