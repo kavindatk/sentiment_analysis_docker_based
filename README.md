@@ -172,7 +172,13 @@ export PS1="\u# "
 
 ## Download Dataset
 
+For this project, I am using a Twitter dataset downloaded from the Kaggle website. This dataset contains four columns, and you can choose any sentiment dataset based on your requirements.
 
+<br/>
+
+Dataset : [Twitter Sentiment Analysis](https://www.kaggle.com/datasets/jp797498e/twitter-entity-sentiment-analysis)
+
+<br/>
 
 ## Data Cleaning & Stemming
 
