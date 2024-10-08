@@ -8,3 +8,7 @@ env.bak/
 venv.bak/
 
 myenv/
+
+
+#File types
+*.csv
