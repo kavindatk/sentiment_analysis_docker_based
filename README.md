@@ -159,6 +159,12 @@ In this step, I will test remote access using PuTTY, rename the terminal (otherw
 export PS1="\u# "
 ```
 
+##### define some commands
+
+```cmd
+alias ll='ls -ls'
+```
+
 
 
 <br/><br/>
@@ -197,8 +203,9 @@ source myenv/bin/activate
 #Install required libraries 
 
 pip install pandas
-pip install numpy
+pip install pyspark
 pip install matplotlib
+pip install setuptools
 
 ```
 Next, I will create a Python file called ``` text_preprocessing.py ``` and include the text preprocessing code in the following manner.
