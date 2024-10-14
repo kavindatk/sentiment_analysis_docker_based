@@ -17,6 +17,9 @@ from pyspark.ml.feature import Tokenizer, StopWordsRemover, CountVectorizer, IDF
 from pyspark.ml.classification import LogisticRegression
 from pyspark.ml.evaluation import MulticlassClassificationEvaluator
 
+def data_write(sdf,file_path):
+    pdf = sdf.toPandas()
+    pdf.to_csv(file_path, index=False)
 
 def read_data_files(path):
     schema = StructType([
@@ -112,6 +115,9 @@ def model_validate(lr_model, vectorizer_model, idf_model, data_df):
         f.col("prediction"),
         f.col("probability")
     ).show(truncate=False)
+    
+    file_path = '../Model/predictions.csv'
+    data_write(predictions,file_path)
     
     # Evaluate the model accuracy on the new dataset
     evaluator = MulticlassClassificationEvaluator(
