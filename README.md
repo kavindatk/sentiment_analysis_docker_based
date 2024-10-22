@@ -370,17 +370,17 @@ Following command can use to execute the created model
 ```
 
 <picture>
-  <img alt="docker" src="https://github.com/kavindatk/sentiment_analysis_docker_based/blob/main/images/model_predictions.JPG" width="700" height="400">
+  <img alt="docker" src="https://github.com/kavindatk/sentiment_analysis_docker_based/blob/main/images/model_predictions.JPG" width="700" height="350">
 </picture>
 
 <br/><br/>
 
 <picture>
-  <img alt="docker" src="https://github.com/kavindatk/sentiment_analysis_docker_based/blob/main/images/test_accuracy.JPG" width="700" height="400">
+  <img alt="docker" src="https://github.com/kavindatk/sentiment_analysis_docker_based/blob/main/images/test_accuracy.JPG" width="700" height="350">
 </picture>
 
 <br/><br/>
 
 <picture>
-  <img alt="docker" src="https://github.com/kavindatk/sentiment_analysis_docker_based/blob/main/images/validation_accuracy.JPG" width="700" height="400">
+  <img alt="docker" src="https://github.com/kavindatk/sentiment_analysis_docker_based/blob/main/images/validation_accuracy.JPG" width="700" height="350">
 </picture>
