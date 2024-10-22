@@ -384,3 +384,14 @@ Following command can use to execute the created model
 <picture>
   <img alt="docker" src="https://github.com/kavindatk/sentiment_analysis_docker_based/blob/main/images/validation_accuracy.JPG" width="700" height="350">
 </picture>
+
+<br/><br/>
+
+Final Model prediction output
+
+<br/><br/>
+
+<picture>
+  <img alt="docker" src="https://github.com/kavindatk/sentiment_analysis_docker_based/blob/main/images/final_out.JPG" width="700" height="350">
+</picture>
+
