@@ -208,87 +208,179 @@ pip install matplotlib
 pip install setuptools
 
 ```
-Next, I will create a Python file called ``` text_preprocessing.py ``` and include the text preprocessing code in the following manner.
+Next, I will create a Python file called ``` logistic_regression_model.py ``` and include the text preprocessing code in the following manner.
 
 ```python
 #import required libraries
 
 import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
+import pyspark
+from pyspark.sql import SparkSession
+from pyspark.sql import functions as f
+from pyspark.sql.types import StringType, StructType, StructField
+from pyspark.ml.feature import Tokenizer, StopWordsRemover, CountVectorizer, IDF
+from pyspark.ml.classification import LogisticRegression
+from pyspark.ml.evaluation import MulticlassClassificationEvaluator
 
 ```
+Read and Write output
 
 ```python
-def read_data_files():
-    
-    #read csv file and remove unwanted columns 
-    columns = ['tweet_id','entity','sentiment','tweet_content']
-    df = pd.read_csv("../Tweets/twitter_training.csv",names=columns)
-    
-    df.drop(columns=['tweet_id', 'entity'], inplace=True)
-    
-    return df
-```
+def data_write(sdf,file_path):
+    pdf = sdf.toPandas()
+    pdf.to_csv(file_path, index=False)
 
-<br/><br/>
-This will show the basic idea of the data
-
-```python
-def show_file_details(df):
-    
-    print('***************Sample Tweets contents***************')
-    print(df.head())
-    
-    
-    print('***************[initial] Dataframe Shape***************')
-    print(df.shape)
-
-    print('***************[initial] Dataframe Duplicate Check***************')
-    print(df.duplicated().sum())
-    
-    print('***************[initial] Dataframe Null Check***************')
-    print(df.isnull().sum())    
-
-    print('***************[initial] Dataframe summary check***************')
-    print(df.describe()) 
-```
-
-<br/><br/>
-
-Next step i will filter required content and drop duuplicate and null data from data frame
-
-```python
-def data_preprocess_stage_01(df_all):
-    
-    filter_data = ['Positive','Negative']
-    
-    df = df_all[df_all['sentiment'].isin(filter_data)]
-    
-    print('***************[Post] Dataframe Duplicate remove check***************')
-    df = df.drop_duplicates()
-    print(df.duplicated().sum())
-    
-    print('***************[Post] Dataframe drop null check***************')
-    df = df.dropna()
-    print(df.isnull().sum()) 
-    
-    print('***************[Post] Dataframe summary check***************')
-    print(df.describe())
-    
+def read_data_files(path):
+    schema = StructType([
+        StructField("tweet_id", StringType(), True),
+        StructField("entity_id", StringType(), True),
+        StructField("setnment_id", StringType(), True),
+        StructField("tweet_msg", StringType(), True)
+    ])    
+    df = spark.read.csv(path, header=False, schema=schema)
     return df
 ```
 
 <br/><br/>
 
-## Data Cleaning & Stemming
 
+## Data Cleaning & Stemming & Senitinal Analysis
 
+In this section, I will demonstrate how to perform data cleaning and sentinel analysis using PySpark.
 
-## Senitinal Analysis
+```python
+def data_modling(data_df):
+    # Filter non-null data and useful columns
+    df = data_df.filter(
+        (f.col("setnment_id").isin('Positive', 'Negative')) & (f.length(f.trim(f.col("tweet_msg"))) > 0)
+    ).select(
+        f.when(f.col("setnment_id") == 'Positive', f.lit(1)).otherwise(0).alias('setnment_id'),
+        f.col("tweet_msg")
+    )
+    
+    # Tokenize tweet messages
+    tokenizer = Tokenizer(inputCol="tweet_msg", outputCol="words")
+    df_words = tokenizer.transform(df)
 
+    # Remove stop words
+    remover = StopWordsRemover(inputCol="words", outputCol="filtered_words")
+    df_clean = remover.transform(df_words)
+    
+    # Convert words to term frequency vectors
+    vectorizer = CountVectorizer(inputCol="filtered_words", outputCol="raw_features")
+    vectorizer_model = vectorizer.fit(df_clean)
+    df_tf = vectorizer_model.transform(df_clean)
+    
+    # Apply IDF (TF-IDF)
+    idf = IDF(inputCol="raw_features", outputCol="features")
+    idf_model = idf.fit(df_tf)
+    df_features = idf_model.transform(df_tf)
+    
+    # Initialize the logistic regression model
+    lr = LogisticRegression(labelCol="setnment_id", featuresCol="features") 
+    
+    # Split the data into training and test sets
+    train_data, test_data = df_features.randomSplit([0.8, 0.2], seed=1234)
+    
+    # Train the model
+    lr_model = lr.fit(train_data)
 
+    # Make predictions on the test data
+    predictions = lr_model.transform(test_data)
+    
+    # Initialize evaluator for classification
+    evaluator = MulticlassClassificationEvaluator(
+        labelCol="setnment_id", 
+        predictionCol="prediction", 
+        metricName="accuracy"
+    )   
+    
+    # Calculate accuracy
+    accuracy = evaluator.evaluate(predictions)
+    print('**************************************************')
+    print("Test Accuracy = {}".format(accuracy))         
+    print('**************************************************')
+    
+    return lr_model, vectorizer_model, idf_model
 
-## Final Outcome 
+```
+<br/><br/>
 
+## Model validation
 
+In this section, I will demonstrate how to evaluate the model data using the test data.
+
+```python
+
+def model_validate(lr_model, vectorizer_model, idf_model, data_df):
+    # Filter non-null data and useful columns
+    df = data_df.filter(
+        (f.col("setnment_id").isin('Positive', 'Negative')) & (f.length(f.trim(f.col("tweet_msg"))) > 0)
+    ).select(
+        f.when(f.col("setnment_id") == 'Positive', f.lit(1)).otherwise(0).alias('setnment_id'),
+        f.col("tweet_msg")
+    )
+    
+    # Tokenize tweet messages
+    tokenizer = Tokenizer(inputCol="tweet_msg", outputCol="words")
+    df_words = tokenizer.transform(df)
+
+    # Remove stop words
+    remover = StopWordsRemover(inputCol="words", outputCol="filtered_words")
+    df_clean = remover.transform(df_words)
+    
+    # Apply the trained vectorizer and IDF model to the new data
+    new_data_tf = vectorizer_model.transform(df_clean)
+    new_data_features = idf_model.transform(new_data_tf)
+    
+    # Make predictions on the new dataset
+    predictions = lr_model.transform(new_data_features)
+    
+    # Show predictions
+    predictions.select(
+        f.col("tweet_msg"), 
+        f.col("prediction"),
+        f.col("probability")
+    ).show(truncate=False)
+    
+    file_path = '../Model/predictions.csv'
+    data_write(predictions,file_path)
+    
+    # Evaluate the model accuracy on the new dataset
+    evaluator = MulticlassClassificationEvaluator(
+        labelCol="setnment_id", 
+        predictionCol="prediction", 
+        metricName="accuracy"
+    )
+    
+    accuracy = evaluator.evaluate(predictions)
+    print('**************************************************')
+    print("Test Accuracy (Validation Set) = {}".format(accuracy))         
+    print('**************************************************')
+```
+
+<br/><br/>
+
+## Execute Program
+
+Following command can use to execute the created model
+
+```bash
+(myenv) root# spark-submit logistic_regression_model.py
+```
+
+<picture>
+  <img alt="docker" src="https://github.com/kavindatk/sentiment_analysis_docker_based/blob/main/images/model_predictions.JPG" width="700" height="350">
+</picture>
+
+<br/><br/>
+
+<picture>
+  <img alt="docker" src="https://github.com/kavindatk/sentiment_analysis_docker_based/blob/main/images/test_accuracy.JPG" width="700" height="350">
+</picture>
+
+<br/><br/>
+
+<picture>
+  <img alt="docker" src="https://github.com/kavindatk/sentiment_analysis_docker_based/blob/main/images/validation_accuracy.JPG" width="700" height="350">
+</picture>
